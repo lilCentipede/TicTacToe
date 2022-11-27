@@ -9,6 +9,7 @@ Board::Board(char _empty_symbol, int _size) : empty_symbol(_empty_symbol), size(
 		}
 		table.push_back(vec);
 	}
+	max_depth = size * size + 1;
 }
 Board::Board(char _empty_symbol, int _size, std::vector<std::vector<char>> _table) : empty_symbol(_empty_symbol), size(_size), table(_table) {
 	filledPlaces = 0;
@@ -18,8 +19,15 @@ Board::Board(char _empty_symbol, int _size, std::vector<std::vector<char>> _tabl
 				filledPlaces++;
 		}
 	}
+	max_depth = size * size + 1;
 }
-Board::Board(const Board& _other): empty_symbol(_other.empty_symbol), size(_other.size), filledPlaces(_other.filledPlaces), table(_other.table) {}
+Board::Board(const Board& _other):
+	empty_symbol(_other.empty_symbol),
+	size(_other.size),
+	filledPlaces(_other.filledPlaces),
+	table(_other.table),
+	max_depth(_other.max_depth)
+{}
 void Board::setPlaceOnBoard(int _row, int _column,char _symbol) {
 	assert(1 <=_row && _row <= size && 1 <= _column && _column <= size);
 	int x = _row - 1, y = _column - 1;
@@ -35,6 +43,9 @@ char Board::getPlaceOnBoard(int _row, int _column) {
 
 int Board::getSize() {
 	return size;
+}
+int Board::getMaxDepth() {
+	return max_depth;
 }
 char Board::getEmptySymbol() {
 	return empty_symbol;

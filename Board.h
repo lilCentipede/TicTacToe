@@ -7,6 +7,7 @@ class Board
 	char empty_symbol;
 	int size;
 	int filledPlaces;
+	int max_depth;
 	std::vector<std::vector<char>> table;
 	bool checkForRow(int _row, char mark);
 	bool checkForColumn(int _column,char mark);
@@ -20,6 +21,7 @@ public:
 	char getPlaceOnBoard(int _row, int _column);
 	void printTable();
 	int getSize();
+	int getMaxDepth();
 	char getEmptySymbol();
 	bool isPlaceEmpty(int _row, int _column);
 	bool isAWinningMove(int _row, int _column);
