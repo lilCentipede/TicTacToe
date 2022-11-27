@@ -21,15 +21,20 @@ void AI::swapValueOfAIsTurn() {
 //the first step of the AI
 std::pair<int, int> AI::calculateBestMove(Board& _board) {
 	std::pair<int, int> bestMove;
-	int v = INT_MAX;
+	int value = INT_MAX;  
+	int alpha = INT_MIN;
+	int beta = INT_MAX;
 	for (int row = 1; row <= _board.getSize(); row++) {
 		for (int column = 1; column <= _board.getSize(); column++) {
 			if (_board.isPlaceEmpty(row, column)) {
-				ScoreAndPlace result = minmax(_board, row, column);
-				int candidateValue = result.getScore();
-				if (v > candidateValue) {
-					v = candidateValue;
+				ScoreAndPlace result = minmax(_board, row, column,alpha,beta);
+				int valueCandidate = result.getScore();
+				if (value > valueCandidate) {
+					value = valueCandidate;
 					bestMove = std::make_pair(row,column);
+				}
+				if (valueCandidate < beta) {
+					beta = valueCandidate;
 				}
 			}
 		}
@@ -38,39 +43,46 @@ std::pair<int, int> AI::calculateBestMove(Board& _board) {
 	return bestMove;
 }
 
-ScoreAndPlace AI::minmax(Board _board, int _row, int _column) {
+ScoreAndPlace AI::minmax(Board _board, int _row, int _column, int _alpha, int _beta) {
 	_board.setPlaceOnBoard(_row, _column, mark);
-	return maxValue(_board, _row, _column);
+	return maxValue(_board, _row, _column, _alpha, _beta);
 
 }
+
 //best for Human
-ScoreAndPlace AI::maxValue(Board _board, int _row, int _column) {
+ScoreAndPlace AI::maxValue(Board _board, int _row, int _column,int _alpha, int _beta) {
 	if (_board.isAWinningMove(_row, _column)) {
-		return ScoreAndPlace(ScoreAndPlace::AI_WINS, std::make_pair(_row,_column));
-	} 
+		return ScoreAndPlace(ScoreAndPlace::AI_WINS, std::make_pair(_row, _column));
+	}
 	else if (_board.isDraw()) {
 		return ScoreAndPlace(ScoreAndPlace::DRAW, std::make_pair(_row, _column));
 	}
 	std::pair<int, int> bestMove;
-	int v = INT_MIN;
+	int value = INT_MIN;
 	for (int row = 1; row <= _board.getSize(); row++) {
 		for (int column = 1; column <= _board.getSize(); column++) {
 			if (_board.isPlaceEmpty(row, column)) {
 				Board new_board(_board);
 				new_board.setPlaceOnBoard(row, column, human_mark);
-				ScoreAndPlace candidate( minValue(new_board, row, column) );
+				ScoreAndPlace candidate(minValue(new_board, row, column,_alpha,_beta));
+
 				int valueCandidate = candidate.getScore();
-				if (v < valueCandidate) {
-					v = valueCandidate;
+				if (value < valueCandidate) {
+					value = valueCandidate;
 					bestMove = candidate.getPlace();
 				}
+				if(valueCandidate >= _beta) {
+					return ScoreAndPlace(value, bestMove);
+				}
+				if (valueCandidate > _alpha) _alpha = valueCandidate;
 			}
 		}
 	}
-	return ScoreAndPlace(v, bestMove);
+	return ScoreAndPlace(value, bestMove);
 }
+
 //best for AI
-ScoreAndPlace AI::minValue(Board _board, int _row, int _column) {
+ScoreAndPlace AI::minValue(Board _board, int _row, int _column, int _alpha, int _beta) {
 	if (_board.isAWinningMove(_row, _column)) {
 		return ScoreAndPlace(ScoreAndPlace::HUMAN_WINS, std::make_pair(_row, _column));
 	}
@@ -78,20 +90,26 @@ ScoreAndPlace AI::minValue(Board _board, int _row, int _column) {
 		return ScoreAndPlace(ScoreAndPlace::DRAW, std::make_pair(_row, _column));
 	}
 	std::pair<int, int> bestMove;
-	int v = INT_MAX;
+	int value = INT_MAX;
 	for (int row = 1; row <= _board.getSize(); row++) {
 		for (int column = 1; column <= _board.getSize(); column++) {
 			if (_board.isPlaceEmpty(row, column)) {
 				Board new_board(_board);
 				new_board.setPlaceOnBoard(row, column, mark);
-				ScoreAndPlace candidate( maxValue(new_board, row, column) );
+				ScoreAndPlace candidate(maxValue(new_board, row, column,_alpha,_beta));
 				int valueCandidate = candidate.getScore();
-				if (v > valueCandidate) {
-					v = valueCandidate;
+				if (value > valueCandidate) {
+					value = valueCandidate;
 					bestMove = candidate.getPlace();
+				}
+				if (valueCandidate <= _alpha) {
+					return ScoreAndPlace(value, bestMove);
+				}
+				if (valueCandidate < _beta) {
+					_beta = valueCandidate;
 				}
 			}
 		}
 	}
-	return ScoreAndPlace(v, bestMove);
+	return ScoreAndPlace(value, bestMove);
 }

@@ -12,8 +12,7 @@ public:
 	Algorithm(Board _board,Human _human, AI _ai);
 	Algorithm(const Algorithm& _other);
 	void play();
-	void humanPlays();
-	void aiPlays();
+
 
 };
 

@@ -18,8 +18,8 @@ public:
 	bool isAIsTurn();
 	void swapValueOfAIsTurn();
 	std::pair<int, int> calculateBestMove(Board& _board);
-	ScoreAndPlace minmax(Board _board,int _row, int _column);
-	ScoreAndPlace maxValue(Board _board, int _row, int _column);
-	ScoreAndPlace minValue(Board _board, int _row, int _column);
+	ScoreAndPlace minmax(Board _board, int _row, int _column, int _alpha, int _beta);
+	ScoreAndPlace maxValue(Board _board, int _row, int _column,int _alpha, int _beta);
+	ScoreAndPlace minValue(Board _board, int _row, int _column, int _alpha, int _beta);
 };
 

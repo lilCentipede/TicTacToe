@@ -15,12 +15,8 @@ int main() {
 		firstHuman = true;
 	else
 		firstHuman = false;
-	std::vector<std::vector<char>> vec = {
-	{'*','*','*'},
-	{'*','*','*'},
-	{'*','*','*'}
-	};
-	Board b('*',3,vec);
+
+	Board b('*',3);
 	Human human(firstHuman, 'X');
 	AI ai(!firstHuman, 'O',human.getMark());
 	Algorithm algorithm(b, human, ai);
